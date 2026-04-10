@@ -22,6 +22,9 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "/api").replace(
   "",
 );
 
+// Bypass ngrok browser warning
+axios.defaults.headers.common["ngrok-skip-browser-warning"] = "true";
+
 interface User {
   id: string;
   username: string;
