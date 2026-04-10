@@ -24,28 +24,33 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:17
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: SPRING_DATASOURCE_USERNAME
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            configMapKeyRef:
-              name: app-config
-              key: SPRING_DATASOURCE_PASSWORD
-        volumeMounts:
-        - name: postgres-storage
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: postgres:17
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: SPRING_DATASOURCE_PASSWORD
+          volumeMounts:
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+            - name: init-sql-volume
+              mountPath: /docker-entrypoint-initdb.d
       volumes:
-      - name: postgres-storage
-        persistentVolumeClaim:
-          claimName: postgres-pvc
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-pvc
+        - name: init-sql-volume
+          configMap:
+            name: postgres-init-sql
 ---
 apiVersion: v1
 kind: Service
@@ -55,6 +60,6 @@ spec:
   selector:
     app: postgres
   ports:
-  - protocol: TCP
-    port: 5432
-    targetPort: 5432
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432

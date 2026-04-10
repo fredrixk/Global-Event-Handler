@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: user-service
-        image: <DOCKER_USERNAME>/user-service:latest
+        image: local/user-service:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8081
         env:

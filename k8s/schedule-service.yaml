@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: schedule-service
-        image: <DOCKER_USERNAME>/schedule-service:latest
+        image: local/schedule-service:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8082
         env:

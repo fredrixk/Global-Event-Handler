@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: sharing-service
-        image: <DOCKER_USERNAME>/sharing-service:latest
+        image: local/sharing-service:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8083
         env:

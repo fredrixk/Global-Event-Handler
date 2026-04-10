@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: api-gateway
-        image: <DOCKER_USERNAME>/api-gateway:latest
+        image: local/api-gateway:latest
+        imagePullPolicy: Never
         ports:
         - containerPort: 8080
         env:

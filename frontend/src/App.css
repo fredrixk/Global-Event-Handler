@@ -70,8 +70,8 @@ body {
     width: 100%;
     outline: none;
     font-size: 1rem;
+    color: var(--text-main);
 }
-
 button {
     cursor: pointer;
     transition: all 0.2s;
