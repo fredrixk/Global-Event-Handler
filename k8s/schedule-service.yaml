@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: schedule-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: schedule-service
+  template:
+    metadata:
+      labels:
+        app: schedule-service
+    spec:
+      containers:
+      - name: schedule-service
+        image: <DOCKER_USERNAME>/schedule-service:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: SERVER_PORT
+          value: "8082"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres-service:5432/schedule_db"
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SPRING_DATASOURCE_PASSWORD
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: schedule-service
+spec:
+  selector:
+    app: schedule-service
+  ports:
+  - protocol: TCP
+    port: 8082
+    targetPort: 8082

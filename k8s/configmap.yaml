@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  POSTGRES_HOST: postgres-service
+  POSTGRES_PORT: "5432"
+  SPRING_DATASOURCE_USERNAME: user
+  SPRING_DATASOURCE_PASSWORD: password
+  USER_SERVICE_URL: http://user-service:8081
+  SCHEDULE_SERVICE_URL: http://schedule-service:8082
+  SHARING_SERVICE_URL: http://sharing-service:8083

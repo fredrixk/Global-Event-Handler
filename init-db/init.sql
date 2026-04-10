@@ -1,0 +1,3 @@
+CREATE DATABASE user_db;
+CREATE DATABASE schedule_db;
+CREATE DATABASE sharing_db;

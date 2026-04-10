@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sharing-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sharing-service
+  template:
+    metadata:
+      labels:
+        app: sharing-service
+    spec:
+      containers:
+      - name: sharing-service
+        image: <DOCKER_USERNAME>/sharing-service:latest
+        ports:
+        - containerPort: 8083
+        env:
+        - name: SERVER_PORT
+          value: "8083"
+        - name: SPRING_DATASOURCE_URL
+          value: "jdbc:postgresql://postgres-service:5432/sharing_db"
+        - name: SPRING_DATASOURCE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SPRING_DATASOURCE_USERNAME
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SPRING_DATASOURCE_PASSWORD
+        - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+          value: "update"
+        - name: SCHEDULE_SERVICE_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: SCHEDULE_SERVICE_URL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sharing-service
+spec:
+  selector:
+    app: sharing-service
+  ports:
+  - protocol: TCP
+    port: 8083
+    targetPort: 8083
