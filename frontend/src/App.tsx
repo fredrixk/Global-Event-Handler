@@ -341,10 +341,6 @@ function App() {
                     {formatTime(event.endTime, timezone)}
                   </span>
                 </div>
-                      "HH:mm",
-                    )}
-                  </span>
-                </div>
                 <div className="event-info">
                   <h4>{event.title}</h4>
                   {event.description && <p>{event.description}</p>}
