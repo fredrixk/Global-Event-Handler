@@ -2,6 +2,9 @@ server:
   port: ${SERVER_PORT:8083}
 
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   application:
     name: sharing-service
   datasource:

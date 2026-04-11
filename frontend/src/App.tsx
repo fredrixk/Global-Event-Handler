@@ -80,6 +80,14 @@ function App() {
   const timezone =
     user?.defaultTimezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  const formatTime = (isoString: string, tz: string) => {
+    try {
+      return formatInTimeZone(parseISO(isoString), tz, "HH:mm");
+    } catch (e) {
+      return "00:00";
+    }
+  };
+
   useEffect(() => {
     if (user) {
       fetchEvents();
@@ -328,17 +336,11 @@ function App() {
               <div key={event.id} className="event-card">
                 <div className="event-time">
                   <Clock size={16} />
-                  <span>
-                    {formatInTimeZone(
-                      parseISO(event.startTime),
-                      timezone,
-                      "HH:mm",
-                    )}
-                  </span>
+                  <span>{formatTime(event.startTime, timezone)}</span>
                   <span className="end-time">
-                    {formatInTimeZone(
-                      parseISO(event.endTime),
-                      timezone,
+                    {formatTime(event.endTime, timezone)}
+                  </span>
+                </div>
                       "HH:mm",
                     )}
                   </span>
@@ -465,19 +467,9 @@ function App() {
                 >
                   <div className="event-time">
                     <Clock size={16} />
-                    <span>
-                      {formatInTimeZone(
-                        parseISO(event.startTime),
-                        timezone,
-                        "HH:mm",
-                      )}
-                    </span>
+                    <span>{formatTime(event.startTime, timezone)}</span>
                     <div className="original-time-hint">
-                      {formatInTimeZone(
-                        parseISO(event.startTime),
-                        event.originalTimezone,
-                        "HH:mm",
-                      )}{" "}
+                      {formatTime(event.startTime, event.originalTimezone)}{" "}
                       {event.originalTimezone}
                     </div>
                   </div>
