@@ -422,8 +422,30 @@ function App() {
       ? [
           ...events.map((e) => ({ ...e, type: "personal" })),
           ...sharedEvents.map((e) => ({ ...e, type: "shared" })),
-        ]
-      : sharedEvents;
+        ].sort((a, b) => a.startTime.localeCompare(b.startTime))
+      : sharedEvents.sort((a, b) => a.startTime.localeCompare(b.startTime));
+
+    // Algorithm to group overlapping events
+    const groups: any[][] = [];
+    combinedEvents.forEach((event) => {
+      let added = false;
+      for (let group of groups) {
+        // If event overlaps with ANY event in the group, it belongs to this group
+        const overlaps = group.some(
+          (groupEvent) =>
+            event.startTime < groupEvent.endTime &&
+            groupEvent.startTime < event.endTime,
+        );
+        if (overlaps) {
+          group.push(event);
+          added = true;
+          break;
+        }
+      }
+      if (!added) {
+        groups.push([event]);
+      }
+    });
 
     return (
       <div className="shared-view-container">
@@ -451,14 +473,42 @@ function App() {
         <h3>{isMerging ? "Merged Timeline" : "Shared Schedule"}</h3>
 
         <div className="event-list">
-          {combinedEvents.length === 0 ? (
+          {groups.length === 0 ? (
             <div className="empty-state">No events in this schedule.</div>
           ) : (
-            combinedEvents
-              .sort((a, b) => a.startTime.localeCompare(b.startTime))
-              .map((event: any, idx) => (
+            groups.map((group, gIdx) => {
+              const isConflict = group.length > 1;
+              if (isConflict) {
+                return (
+                  <div key={`group-${gIdx}`} className="conflict-box">
+                    <div className="conflict-header">
+                      <X size={16} color="var(--error)" />
+                      <span>Schedule Conflict Detected</span>
+                    </div>
+                    {group.map((event, idx) => (
+                      <div
+                        key={event.id + idx}
+                        className={`event-card mini ${event.type === "shared" ? "shared-type" : ""}`}
+                      >
+                        <div className="event-time">
+                          <span>{formatTime(event.startTime, timezone)}</span>
+                        </div>
+                        <div className="event-info">
+                          <div className="type-badge">
+                            {event.type === "personal" ? "Mine" : "Shared"}
+                          </div>
+                          <h4>{event.title}</h4>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }
+
+              const event = group[0];
+              return (
                 <div
-                  key={event.id + idx}
+                  key={event.id}
                   className={`event-card ${event.type === "shared" ? "shared-type" : ""}`}
                 >
                   <div className="event-time">
@@ -477,7 +527,8 @@ function App() {
                     {event.description && <p>{event.description}</p>}
                   </div>
                 </div>
-              ))
+              );
+            })
           )}
         </div>
       </div>
