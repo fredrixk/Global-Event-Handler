@@ -492,6 +492,9 @@ function App() {
                       >
                         <div className="event-time">
                           <span>{formatTime(event.startTime, timezone)}</span>
+                          <span className="end-time">
+                            {formatTime(event.endTime, timezone)}
+                          </span>
                         </div>
                         <div className="event-info">
                           <div className="type-badge">
@@ -514,6 +517,9 @@ function App() {
                   <div className="event-time">
                     <Clock size={16} />
                     <span>{formatTime(event.startTime, timezone)}</span>
+                    <span className="end-time">
+                      {formatTime(event.endTime, timezone)}
+                    </span>
                     <div className="original-time-hint">
                       {formatTime(event.startTime, event.originalTimezone)}{" "}
                       {event.originalTimezone}
