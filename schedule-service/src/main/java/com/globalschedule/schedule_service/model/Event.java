@@ -1,13 +1,12 @@
 package com.globalschedule.schedule_service.model;
 
 import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "events")
@@ -16,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Event {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -29,10 +29,10 @@ public class Event {
     private String description;
 
     @Column(nullable = false)
-    private LocalDateTime startTime; // Stored in UTC
+    private Instant startTime; // Changed to Instant for automatic UTC serialization
 
     @Column(nullable = false)
-    private LocalDateTime endTime; // Stored in UTC
+    private Instant endTime;
 
     @Column(nullable = false)
     private String originalTimezone;
